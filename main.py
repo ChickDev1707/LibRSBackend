@@ -1,11 +1,25 @@
+from flask import Flask, request
+from flask_cors import CORS, cross_origin
+from model import get_recommendation
 
-from flask import Flask
+import json
 
 app = Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route('/')
+# api
+@app.get('/')
 def index():
-  return "Hello world"
+  return "hello world"
 
-if __name__ == "__main__":
+@app.post('/')
+def chatbot(): 
+  isbn = request.form["isbn"]
+  result = {
+    "books": get_recommendation(isbn)
+  }
+  return json.dumps(result, ensure_ascii=False).encode("utf8")
+   
+if __name__ == '__main__':
   app.run(debug=True)
